@@ -4,7 +4,7 @@
   Purpose: Calendly redirects here after a booking. This page (1) fires the Meta Pixel conversion,
   and (2) shows the booked name + date/time read from Calendly's redirect query params.
   SET-UP TODO:
-    1. Replace YOUR_PIXEL_ID (two places) with your real Meta Pixel ID from Events Manager.
+    1. Replace 4098876717083982 (two places) with your real Meta Pixel ID from Events Manager.
     2. In Calendly → your Fit Call event type → Confirmation Page → "Redirect to an external site" →
        paste this page's URL, and turn ON "Pass event details to your redirected page".
        (Redirect requires a paid Calendly plan — Standard or above.)
@@ -26,12 +26,12 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', 'YOUR_PIXEL_ID');          /* ← replace with your Pixel ID */
+fbq('init', '4098876717083982');          /* ← replace with your Pixel ID */
 fbq('track', 'PageView');
 fbq('track', 'Schedule');              /* conversion: Fit Call booked */
 </script>
 <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+  src="https://www.facebook.com/tr?id=4098876717083982&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel Code -->
 
 <style>
