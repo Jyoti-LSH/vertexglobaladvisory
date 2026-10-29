@@ -28,7 +28,8 @@ t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '4098876717083982');          /* ← replace with your Pixel ID */
 fbq('track', 'PageView');
-fbq('track', 'Schedule');              /* conversion: Fit Call booked */
+/* The "Schedule" conversion fires on the landing page via Calendly's event_scheduled
+   listener, so it is intentionally NOT fired here (prevents double-counting). */
 </script>
 <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=4098876717083982&ev=PageView&noscript=1"/></noscript>
