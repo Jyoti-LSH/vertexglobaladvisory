@@ -400,18 +400,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
 
 <!-- VII · BOOK / QUALIFIER -->
 <section class="section" id="book">
-  <div class="wrap col" style="margin:0 auto;">
-    <p class="eyebrow" style="text-align:center;">Book your 20-min Fit Call</p>
-    <h2 class="center" style="text-align:center;max-width:24ch;margin:0 auto;">A few questions, so your Fit Call is worth your time.</h2>
-    <p class="muted center" style="text-align:center;max-width:56ch;margin:18px auto 0;">We take on a limited number of clients and speak with people we can genuinely help. Answer a few short questions, then choose a time that suits you for your complimentary 20-minute Fit Call.</p>
+  <div class="wrap">
+    <div class="col" style="margin:0 auto;">
+      <p class="eyebrow" style="text-align:center;">Book your 20-min Fit Call</p>
+      <h2 class="center" style="text-align:center;max-width:24ch;margin:0 auto;">A few questions, so your Fit Call is worth your time.</h2>
+      <p class="muted center" style="text-align:center;max-width:56ch;margin:18px auto 0;">We take on a limited number of clients and speak with people we can genuinely help. Answer a few short questions, then choose a time that suits you for your complimentary 20-minute Fit Call.</p>
+    </div>
 
     <!-- Calendly inline embed — the Fit Call booking flow. Screening questions + email verification
-         are configured inside Calendly; the Schedule pixel fires via the event_scheduled listener below. -->
-    <div class="calendly-inline-widget"
+         are configured inside Calendly. The embed auto-resizes to its content via the
+         calendly.page_height listener below (no inner scrollbar); the Schedule pixel fires
+         via the event_scheduled listener. -->
+    <div id="calendlyEmbed" class="calendly-inline-widget"
          data-url="https://calendly.com/contact-vertexglobaladvisory/30min?hide_gdpr_banner=1&primary_color=c6a24c&background_color=0b0f1a&text_color=cbd0d9"
-         style="min-width:320px;height:780px;"></div>
+         style="min-width:320px;max-width:940px;margin:36px auto 0;height:1050px;"></div>
     <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-    <p class="privacy" style="text-align:center;margin-top:18px;">By application · Confidential · For UK founders and business owners earning £150k+. We'll only use your details to arrange your call.</p>
+    <p class="privacy" style="text-align:center;max-width:640px;margin:20px auto 0;">Private &amp; confidential. We respect your privacy — no spam, and we'll never share or sell your details. We only use them to arrange and prepare for your Fit Call. See our <a href="privacy.html">Privacy&nbsp;Policy</a>.</p>
   </div>
 </section>
 
@@ -440,10 +444,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
     var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.14});
     els.forEach(function(e){io.observe(e);});
   })();
-  // Fire the Meta Pixel "Schedule" conversion when a booking completes inside the Calendly embed.
+  // Calendly inline embed: (1) auto-resize the embed to fit each step so there's no inner
+  // scrollbar (the page scrolls naturally), and (2) fire the Meta Pixel "Schedule" conversion
+  // when a booking completes.
   window.addEventListener('message', function(e){
     if(typeof e.data !== 'object' || !e.data || !e.data.event) return;
     if((e.origin||'').indexOf('calendly.com') === -1) return;
+    if(e.data.event === 'calendly.page_height' && e.data.payload && e.data.payload.height){
+      var h = parseInt(e.data.payload.height, 10);
+      var box = document.getElementById('calendlyEmbed');
+      if(box && h > 400){ box.style.height = h + 'px'; }
+    }
     if(e.data.event === 'calendly.event_scheduled' && window.fbq){
       fbq('track','Schedule');
     }
