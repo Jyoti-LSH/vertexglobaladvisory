@@ -412,8 +412,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
          calendly.page_height listener below (no inner scrollbar); the Schedule pixel fires
          via the event_scheduled listener. -->
     <div id="calendlyEmbed" class="calendly-inline-widget"
-         data-url="https://calendly.com/contact-vertexglobaladvisory/private-fit-call?hide_gdpr_banner=1&primary_color=c6a24c&background_color=0b0f1a&text_color=cbd0d9"
-         style="min-width:320px;max-width:940px;margin:36px auto 0;height:1050px;"></div>
+         data-url="https://calendly.com/contact-vertexglobaladvisory/private-fit-call?hide_gdpr_banner=1&primary_color=c6a24c"
+         style="min-width:320px;max-width:940px;margin:36px auto 0;height:1050px;border-radius:6px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.45);"></div>
     <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
     <p class="privacy" style="text-align:center;max-width:640px;margin:20px auto 0;">Private &amp; confidential. We respect your privacy — no spam, and we'll never share or sell your details. We only use them to arrange and prepare for your Fit Call. See our <a href="privacy.html">Privacy&nbsp;Policy</a>.</p>
   </div>
@@ -445,8 +445,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
     els.forEach(function(e){io.observe(e);});
   })();
   // Calendly inline embed: (1) auto-resize the embed to fit each step so there's no inner
-  // scrollbar (the page scrolls naturally), and (2) fire the Meta Pixel "Schedule" conversion
-  // when a booking completes.
+  // scrollbar, (2) fire the Meta Pixel "Schedule" conversion, and (3) send the visitor to our
+  // own thank-you page on booking — handled here, NOT via Calendly's redirect, so there's no
+  // "You are leaving Calendly" interstitial (Calendly's own redirect should be left OFF).
   window.addEventListener('message', function(e){
     if(typeof e.data !== 'object' || !e.data || !e.data.event) return;
     if((e.origin||'').indexOf('calendly.com') === -1) return;
@@ -455,8 +456,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
       var box = document.getElementById('calendlyEmbed');
       if(box && h > 400){ box.style.height = h + 'px'; }
     }
-    if(e.data.event === 'calendly.event_scheduled' && window.fbq){
-      fbq('track','Schedule');
+    if(e.data.event === 'calendly.event_scheduled'){
+      if(window.fbq){ fbq('track','Schedule'); }
+      setTimeout(function(){ window.location.href = '/thank-you/'; }, 600);
     }
   });
 </script>
