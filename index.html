@@ -444,17 +444,26 @@ footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;
     var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.14});
     els.forEach(function(e){io.observe(e);});
   })();
-  // Calendly inline embed: (1) auto-resize the embed to fit each step so there's no inner
-  // scrollbar, (2) fire the Meta Pixel "Schedule" conversion, and (3) send the visitor to our
-  // own thank-you page on booking — handled here, NOT via Calendly's redirect, so there's no
-  // "You are leaving Calendly" interstitial (Calendly's own redirect should be left OFF).
+  // Calendly inline embed: (1) auto-resize the embed to fit each step (no inner scrollbar),
+  // keeping the top in view when a step shrinks (e.g. the tall question form collapsing into
+  // the short verify-code step), (2) fire the Meta Pixel "Schedule" conversion, and (3) send
+  // the visitor to our own thank-you page on booking — handled here, NOT via Calendly's
+  // redirect, so there's no "You are leaving Calendly" interstitial (Calendly's own is OFF).
   window.addEventListener('message', function(e){
     if(typeof e.data !== 'object' || !e.data || !e.data.event) return;
     if((e.origin||'').indexOf('calendly.com') === -1) return;
     if(e.data.event === 'calendly.page_height' && e.data.payload && e.data.payload.height){
       var h = parseInt(e.data.payload.height, 10);
       var box = document.getElementById('calendlyEmbed');
-      if(box && h > 400){ box.style.height = h + 'px'; }
+      if(box && h > 400){
+        var prev = parseInt(box.style.height, 10) || 0;
+        box.style.height = h + 'px';
+        // If the step got shorter and the embed's top is scrolled out of view, bring it back
+        // so the new step (e.g. the verification-code boxes) is immediately visible.
+        if(h < prev - 150 && box.getBoundingClientRect().top < 0){
+          window.scrollTo({ top: box.getBoundingClientRect().top + window.pageYOffset - 90, behavior: 'smooth' });
+        }
+      }
     }
     if(e.data.event === 'calendly.event_scheduled'){
       if(window.fbq){ fbq('track','Schedule'); }
